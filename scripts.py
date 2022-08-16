@@ -85,7 +85,7 @@ def get_last_lesson(schoolkid: Schoolkid, subject_title: str) -> Lesson:
         ).order_by('-date')
         if lessons:
             return lessons.first()
-        print('There are no such lessons.')
+        print(f'Уроков по предмету "{subject_title}" пока не было.')
     return None
 
 
@@ -99,9 +99,12 @@ def get_schoolkid(schoolkid_name: str) -> Schoolkid:
         schoolkid = Schoolkid.objects.get(full_name__contains=schoolkid_name)
         return schoolkid
     except ObjectDoesNotExist:
-        print('There are no such schoolkids.')
+        print(f'Нет школьников, ФИО которых содержит "{schoolkid_name}".')
+        print('Проверьте имя на опечатки и запустите снова.')
     except MultipleObjectsReturned:
-        print('There are more than one of these schoolkids.')
+        print('Найдено больше одного школьника,',
+              f'ФИО которых содержит "{schoolkid_name}".')
+        print('Введите фамилию, имя и отчество.')
     return None
 
 
@@ -118,9 +121,13 @@ def get_subject(schoolkid: Schoolkid, subject_title: str) -> Subject:
         )
         return subject
     except ObjectDoesNotExist:
-        print('There are no such subjects.')
+        print(f'Нет предметов для {schoolkid.year_of_study}-го класса,',
+              f'название которых содержит "{subject_title}"')
+        print('Проверьте название предмета на опечатки и запустите снова.')
     except MultipleObjectsReturned:
-        print('There are more than one of these subjects.')
+        print('Найдено больше одного предмета,',
+              f'название которых содержит "{subject_title}".\n',
+              'Введите более полное название предмета.')
     return None
 
 

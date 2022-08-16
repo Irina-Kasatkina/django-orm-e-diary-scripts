@@ -1,47 +1,59 @@
-# Hacking an electronic diary
+# Взлом электронного дневника
 
-These are the scripts for the e-diary website. Scripts are designed to fix bad marks, remove chastisements and create commendation from teachers.
+Это скрипты для сайта электронного дневника. Скрипты предназначены для исправления плохих отметок, удаления замечаний и добавления похвалы от учителей.
 
-### How to install
+### Как установить
 
-To install these scripts:
-1. Install the e-diary website https://github.com/devmanorg/e-diary on your local computer by following the instructions in its repository.
-2. Get your own database file somewhere.
-3. Start the e-diary website.
-4. Copy the `scripts.py` file to a local drive and put it in the root directory of the website (in the same directory as the `manage.py` file).
+Чтобы установить эти скрипты:
+1. Установите вебсайт электронного дневника https://github.com/devmanorg/e-diary на локальный компьютер, следуя инструкциям в его репозитории.
+2. Раздобудьте где-нибудь свой собственный файл базы данных электронного дневника.
+3. Запустите вебсайт электронного дневника по инструкции из его репозитория.
+4. Скопируйте файл `scripts.py` на локальный диск и поместите его в корневой каталог вебсайта (в тот же каталог, где лежит файл `manage.py`).
 
-### How to start
+### Как начать
 
-Run cmd, change to the website folder on the command line, then start an interactive Python console to interact with the database:
+Запустите cmd, перейдите в папку вебсайта в командной строке, затем запустите интерактивную консоль Python для взаимодействия с базой данных:
 ```
-cd {website_folder_on_your_local_disk}
+cd {папка_сайта_на_вашем_локальном_диске}
 python manage.py shell
 ```
 
-Make the import of the scripts.py:
+Сделайте импорт scripts.py:
 ```
 import scripts
 ```
 
-### How to edit data of the e-diary
+### Как редактировать данные электронного дневника
 
-To fix bad marks, run the command:
+Чтобы исправить плохие оценки, выполните команду:
 ```
-scripts.fix_marks(<schoolkid_name>)
+scripts.fix_marks(<ФИО_школьника>)
+```
+Например:
+```
+scripts.fix_marks('Иванов Иван')
 ```
 
-To remove all chastisements, run the command:
+Чтобы удалить все замечания, выполните команду:
 ```
-scripts.remove_chastisements(<schoolkid_name>)
+scripts.remove_chastisements(<ФИО_школьника>)
+```
+Например:
+```
+scripts.remove_chastisements('Иванов Иван')
 ```
 
-To add commendation, run the command:
+Чтобы добавить похвалу, выполните команду:
 ```
-scripts.create_commendation(<schoolkid_name>, <subject_title>)
+scripts.create_commendation(<ФИО_школьника>, <название_учебного_предмета>)
 ```
-Commendation will be added to the last lesson in the specified subject.
+Например:
+```
+scripts.create_commendation('Иванов Иван', 'Математика')
+```
+Благодарность будет добавлена ​​к последнему занятию по указанному предмету.
 
 
-### Project Goals
+### Цели проекта
 
-The code is written for educational purposes in the process of learning on the online course on Django ORM for Python developers.
+Код написан в образовательных целях в процессе обучения на онлайн-курсе по Django ORM для Python-разработчиков.
