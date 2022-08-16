@@ -37,7 +37,7 @@ scripts.remove_chastisements(<schoolkid_name>)
 
 To add commendation, run the command:
 ```
-scripts.create_commendation(<student name>, <subject>)
+scripts.create_commendation(<schoolkid_name>, <subject_title>)
 ```
 Commendation will be added to the last lesson in the specified subject.
 
