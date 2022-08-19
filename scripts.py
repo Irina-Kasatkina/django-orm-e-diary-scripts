@@ -21,36 +21,39 @@ def create_commendation(schoolkid_name: str, subject_title: str):
     """
 
     schoolkid = get_schoolkid(schoolkid_name)
-    if schoolkid:
+    if not schoolkid:
+        return
 
-        lesson = get_last_lesson(schoolkid, subject_title)
-        if lesson:
-            texts = [
-                    'Молодец!', 'Отлично!', 'Хорошо!',
-                    'Гораздо лучше, чем я ожидал!', 'Ты меня приятно удивил!',
-                    'Великолепно!', 'Прекрасно!', 'Ты меня очень обрадовал!',
-                    'Именно этого я давно ждал от тебя!',
-                    'Сказано здорово – просто и ясно!',
-                    'Ты, как всегда, точен!', 'Очень хороший ответ!',
-                    'Талантливо!', 'Ты сегодня прыгнул выше головы!',
-                    'Я поражен!', 'Уже существенно лучше!', 'Потрясающе!',
-                    'Замечательно!', 'Прекрасное начало!', 'Так держать!',
-                    'Ты на верном пути!', 'Здорово!',
-                    'Это как раз то, что нужно!', 'Я тобой горжусь!',
-                    'С каждым разом у тебя получается всё лучше!',
-                    'Мы с тобой не зря поработали!',
-                    'Я вижу, как ты стараешься!', 'Ты растешь над собой!',
-                    'Ты многое сделал, я это вижу!',
-                    'Теперь у тебя точно все получится!',
-            ]
-            text = random.choice(texts)
-            Commendation.objects.create(
-                    text=text,
-                    created=lesson.date,
-                    schoolkid=schoolkid,
-                    subject=lesson.subject,
-                    teacher=lesson.teacher
-            )
+    lesson = get_last_lesson(schoolkid, subject_title)
+    if not lesson:
+        return
+
+    texts = [
+            'Молодец!', 'Отлично!', 'Хорошо!',
+            'Гораздо лучше, чем я ожидал!', 'Ты меня приятно удивил!',
+            'Великолепно!', 'Прекрасно!', 'Ты меня очень обрадовал!',
+            'Именно этого я давно ждал от тебя!',
+            'Сказано здорово – просто и ясно!',
+            'Ты, как всегда, точен!', 'Очень хороший ответ!',
+            'Талантливо!', 'Ты сегодня прыгнул выше головы!',
+            'Я поражен!', 'Уже существенно лучше!', 'Потрясающе!',
+            'Замечательно!', 'Прекрасное начало!', 'Так держать!',
+            'Ты на верном пути!', 'Здорово!',
+            'Это как раз то, что нужно!', 'Я тобой горжусь!',
+            'С каждым разом у тебя получается всё лучше!',
+            'Мы с тобой не зря поработали!',
+            'Я вижу, как ты стараешься!', 'Ты растешь над собой!',
+            'Ты многое сделал, я это вижу!',
+            'Теперь у тебя точно все получится!',
+    ]
+    text = random.choice(texts)
+    Commendation.objects.create(
+            text=text,
+            created=lesson.date,
+            schoolkid=schoolkid,
+            subject=lesson.subject,
+            teacher=lesson.teacher
+    )
 
 
 def fix_marks(schoolkid_name: str):
@@ -63,12 +66,14 @@ def fix_marks(schoolkid_name: str):
     """
 
     schoolkid = get_schoolkid(schoolkid_name)
-    if schoolkid:
-        good_point, great_point = 4, 5
-        Mark.objects.filter(
-                schoolkid=schoolkid,
-                points__lt=good_point
-        ).update(points=great_point)
+    if not schoolkid:
+        return
+
+    good_point, great_point = 4, 5
+    Mark.objects.filter(
+            schoolkid=schoolkid,
+            points__lt=good_point
+    ).update(points=great_point)
 
 
 def get_last_lesson(schoolkid: Schoolkid, subject_title: str) -> Lesson:
@@ -76,17 +81,21 @@ def get_last_lesson(schoolkid: Schoolkid, subject_title: str) -> Lesson:
     Get from database and return the Subject model object with the latter date
     by the given Schoolkid model object and subject title.
     """
+
     subject = get_subject(schoolkid, subject_title)
-    if subject:
-        lessons = Lesson.objects.filter(
-                subject__title=subject.title,
-                year_of_study=schoolkid.year_of_study,
-                group_letter=schoolkid.group_letter
-        ).order_by('-date')
-        if lessons:
-            return lessons.first()
+    if not subject:
+        return None
+
+    lessons = Lesson.objects.filter(
+            subject__title=subject.title,
+            year_of_study=schoolkid.year_of_study,
+            group_letter=schoolkid.group_letter
+    ).order_by('-date')
+    if not lessons:
         print(f'Уроков по предмету "{subject_title}" пока не было.')
-    return None
+        return None
+
+    return lessons.first()
 
 
 def get_schoolkid(schoolkid_name: str) -> Schoolkid:
@@ -101,11 +110,12 @@ def get_schoolkid(schoolkid_name: str) -> Schoolkid:
     except ObjectDoesNotExist:
         print(f'Нет школьников, ФИО которых содержит "{schoolkid_name}".')
         print('Проверьте имя на опечатки и запустите снова.')
+        return None
     except MultipleObjectsReturned:
         print('Найдено больше одного школьника,',
               f'ФИО которых содержит "{schoolkid_name}".')
         print('Введите фамилию, имя и отчество.')
-    return None
+        return None
 
 
 def get_subject(schoolkid: Schoolkid, subject_title: str) -> Subject:
@@ -124,11 +134,12 @@ def get_subject(schoolkid: Schoolkid, subject_title: str) -> Subject:
         print(f'Нет предметов для {schoolkid.year_of_study}-го класса,',
               f'название которых содержит "{subject_title}"')
         print('Проверьте название предмета на опечатки и запустите снова.')
+        return None
     except MultipleObjectsReturned:
         print('Найдено больше одного предмета,',
               f'название которых содержит "{subject_title}".\n',
               'Введите более полное название предмета.')
-    return None
+        return None
 
 
 def remove_chastisements(schoolkid_name):
